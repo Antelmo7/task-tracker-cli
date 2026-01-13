@@ -1,32 +1,45 @@
+#!/usr/bin/env node
+
+import fs from 'fs';
+import path from 'path';
+const __dirname = import.meta.dirname;
+
 const args = process.argv.slice(2);
 
-const tasks = [
-  {
-    id: 1,
-    description: 'Buy A Car',
-    status: 'todo',
-    createdAt: new Date('2026-01-13T21:24:11.482Z'),
-    updatedAt: new Date('2026-01-13T21:24:11.482Z')
-  },
-  {
-    id: 2,
-    description: 'Go gym',
-    status: 'done',
-    createdAt: new Date('2026-01-13T21:24:11.482Z'),
-    updatedAt: new Date('2026-01-13T21:24:11.482Z')
-  },
-  {
-    id: 3,
-    description: 'Finish Project',
-    status: 'in-progress',
-    createdAt: new Date('2026-01-13T21:24:11.482Z'),
-    updatedAt: new Date('2026-01-13T21:24:11.482Z')
-  },
-];
+const tasksFilePath = path.join(__dirname, 'tasks.json');
+
+function readTasks() {
+  if (!fs.existsSync(tasksFilePath)) {
+    try {
+      const tasks = [];
+      fs.writeFileSync(tasksFilePath, JSON.stringify(tasks));
+      return tasks;
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    try {
+      const tasks = fs.readFileSync(tasksFilePath, 'utf8');
+      return JSON.parse(tasks);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
+
+function updateTasksFile(tasks) {
+  try {
+    fs.writeFileSync(tasksFilePath, JSON.stringify(tasks));
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 function addTask(description) {
+  const tasks = readTasks();
+
   const task = {
-    id: tasks.length + 1,
+    id: (tasks.length === 0) ? 1 : parseInt(tasks[tasks.length - 1].id) + 1,
     description,
     status: 'todo',
     createdAt: new Date(),
@@ -34,18 +47,26 @@ function addTask(description) {
   }
 
   tasks.push(task)
-  console.log(tasks);
-  console.log(`Task added successfully (ID: ${tasks.length})`);
+  updateTasksFile(tasks);
+  console.log(`Task added successfully (ID: ${task.id})`);
 }
 
 function listAllTasks() {
-  console.log('All tasks\n');
-  tasks.forEach(task => {
-    console.log(`Id: ${task.id} - ${task.description} (${task.status}) | Created: ${new Date(task.createdAt).toDateString()} - Updated: ${new Date(task.updatedAt).toDateString()}`);
-  });
+  const tasks = readTasks();
+
+  if (tasks.length < 1) {
+    console.log('No tasks yet');
+  } else {
+    console.log('All tasks\n');
+    tasks.forEach(task => {
+      console.log(`Id: ${task.id} - ${task.description} (${task.status}) | Created: ${new Date(task.createdAt).toDateString()} - Updated: ${new Date(task.updatedAt).toDateString()}`);
+    });
+  }
 }
 
 function listTasksByStatus(status) {
+  const tasks = readTasks();
+
   tasks.forEach(task => {
     if (task.status === status)
       console.log(`Id: ${task.id} - ${task.description} (${task.status}) | Created: ${new Date(task.createdAt).toDateString()} - Updated: ${new Date(task.updatedAt).toDateString()}`);
@@ -53,31 +74,66 @@ function listTasksByStatus(status) {
 }
 
 function updateTask({ taskId, newDescription }) {
-  if (!tasks[taskId - 1]) {
+  const tasks = readTasks();
+  const taskToUpdateIndex = tasks.findIndex(task => task.id == taskId);
+
+  if (taskToUpdateIndex < 0) {
     console.error(`Task with ID: ${taskId} does not exist`);
   } else {
-    tasks[taskId - 1].description = newDescription;
+    tasks[taskToUpdateIndex].description = newDescription;
+    updateTasksFile(tasks);
     console.log(`Task updated successfully (ID: ${taskId})`);
   }
 }
 
 function deleteTask(taskId) {
-  if (!tasks[taskId - 1]) {
+  const tasks = readTasks();
+  const taskToUpdateIndex = tasks.findIndex(task => task.id == taskId);
+
+  if (taskToUpdateIndex < 0) {
     console.error(`Task with ID: ${taskId} does not exist`);
   } else {
-    delete tasks[taskId - 1];
+    tasks.splice(taskToUpdateIndex, 1);
+    updateTasksFile(tasks);
     console.log(`Task deleted successfully (ID: ${taskId})`);
   }
 }
 
 function changeTaskStatus({ taskId, status }) {
-  if (!tasks[taskId - 1]) {
+  const tasks = readTasks();
+  const taskToUpdateIndex = tasks.findIndex(task => task.id == taskId);
+
+  if (taskToUpdateIndex < 0) {
     console.error(`Task with ID: ${taskId} does not exist`);
   } else {
-    tasks[taskId - 1].status = status;
-    listAllTasks();
+    tasks[taskToUpdateIndex].status = status;
+    updateTasksFile(tasks);
     console.log(`Task updated successfully (ID: ${taskId})`);
   }
+}
+
+if (args[0] === 'help' || args.length < 1) {
+  console.log(`
+      ## Adding a new task:
+      task-cli add "Buy groceries"
+      ### Output: Task added successfully (ID: 1)
+
+      ## Updating and deleting tasks:
+      task-cli update 1 "Buy groceries and cook dinner"
+      task-cli delete 1
+
+      ## Marking a task as in progress or done:
+      task-cli mark-in-progress 1
+      task-cli mark-done 1
+
+      ## Listing all tasks:
+      task-cli list
+
+      ## Listing tasks by status:
+      task-cli list done
+      task-cli list todo
+      task-cli list in-progress
+    `);
 }
 
 if (args[0] === 'add') {
