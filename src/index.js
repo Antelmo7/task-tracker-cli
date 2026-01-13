@@ -10,15 +10,15 @@ const tasks = [
   },
   {
     id: 2,
-    description: 'Buy A Car',
-    status: 'todo',
+    description: 'Go gym',
+    status: 'done',
     createdAt: new Date('2026-01-13T21:24:11.482Z'),
     updatedAt: new Date('2026-01-13T21:24:11.482Z')
   },
   {
     id: 3,
-    description: 'Buy A Car',
-    status: 'todo',
+    description: 'Finish Project',
+    status: 'in-progress',
     createdAt: new Date('2026-01-13T21:24:11.482Z'),
     updatedAt: new Date('2026-01-13T21:24:11.482Z')
   },
@@ -45,6 +45,11 @@ function listAllTasks() {
   });
 }
 
+function updateTask({ taskId, newDescription }) {
+  tasks[taskId - 1].description = newDescription;
+  console.log(`Task updated successfully (ID: ${taskId})`);
+}
+
 if (args[0] === 'add') {
   const description = args.slice(1).join(" "); // Join the words after the "add" sub command
   if (!description) {
@@ -57,4 +62,9 @@ if (args[0] === 'add') {
   if (!status) {
     listAllTasks();
   }
+} else if (args[0] === 'update') {
+  const taskId = args[1];
+  const newDescription = args[2];
+  if (!newDescription) console.error(`Please type a task description`);
+  else updateTask({ taskId, newDescription });
 }
