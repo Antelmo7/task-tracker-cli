@@ -45,6 +45,13 @@ function listAllTasks() {
   });
 }
 
+function listTasksByStatus(status) {
+  tasks.forEach(task => {
+    if (task.status === status)
+      console.log(`Id: ${task.id} - ${task.description} (${task.status}) | Created: ${new Date(task.createdAt).toDateString()} - Updated: ${new Date(task.updatedAt).toDateString()}`);
+  });
+}
+
 function updateTask({ taskId, newDescription }) {
   if (!tasks[taskId - 1]) {
     console.error(`Task with ID: ${taskId} does not exist`);
@@ -85,6 +92,8 @@ if (args[0] === 'add') {
 
   if (!status) {
     listAllTasks();
+  } else {
+    listTasksByStatus(status);
   }
 } else if (args[0] === 'update') {
   const taskId = args[1];
