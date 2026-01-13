@@ -59,6 +59,16 @@ function deleteTask(taskId) {
     console.error(`Task with ID: ${taskId} does not exist`);
   } else {
     delete tasks[taskId - 1];
+    console.log(`Task deleted successfully (ID: ${taskId})`);
+  }
+}
+
+function changeTaskStatus({ taskId, status }) {
+  if (!tasks[taskId - 1]) {
+    console.error(`Task with ID: ${taskId} does not exist`);
+  } else {
+    tasks[taskId - 1].status = status;
+    listAllTasks();
     console.log(`Task updated successfully (ID: ${taskId})`);
   }
 }
@@ -72,12 +82,14 @@ if (args[0] === 'add') {
   }
 } else if (args[0] === 'list') {
   const status = args[1];
+
   if (!status) {
     listAllTasks();
   }
 } else if (args[0] === 'update') {
   const taskId = args[1];
   const newDescription = args[2];
+
   if (!newDescription) console.error(`Please type a task description`);
   else updateTask({ taskId: parseInt(taskId), newDescription });
 } else if (args[0] === 'delete') {
@@ -85,4 +97,14 @@ if (args[0] === 'add') {
 
   if (!taskId) console.error(`Please type a task ID`);
   else deleteTask(parseInt(taskId));
+} else if (args[0] === 'mark-in-progress') {
+  const taskId = args[1];
+
+  if (!taskId) console.error(`Please type a task ID`);
+  else changeTaskStatus({ taskId: parseInt(taskId), status: 'in-progress' });
+} else if (args[0] === 'mark-done') {
+  const taskId = args[1];
+
+  if (!taskId) console.error(`Please type a task ID`);
+  else changeTaskStatus({ taskId: parseInt(taskId), status: 'done' });
 }
