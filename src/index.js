@@ -46,8 +46,21 @@ function listAllTasks() {
 }
 
 function updateTask({ taskId, newDescription }) {
-  tasks[taskId - 1].description = newDescription;
-  console.log(`Task updated successfully (ID: ${taskId})`);
+  if (!tasks[taskId - 1]) {
+    console.error(`Task with ID: ${taskId} does not exist`);
+  } else {
+    tasks[taskId - 1].description = newDescription;
+    console.log(`Task updated successfully (ID: ${taskId})`);
+  }
+}
+
+function deleteTask(taskId) {
+  if (!tasks[taskId - 1]) {
+    console.error(`Task with ID: ${taskId} does not exist`);
+  } else {
+    delete tasks[taskId - 1];
+    console.log(`Task updated successfully (ID: ${taskId})`);
+  }
 }
 
 if (args[0] === 'add') {
@@ -66,5 +79,10 @@ if (args[0] === 'add') {
   const taskId = args[1];
   const newDescription = args[2];
   if (!newDescription) console.error(`Please type a task description`);
-  else updateTask({ taskId, newDescription });
+  else updateTask({ taskId: parseInt(taskId), newDescription });
+} else if (args[0] === 'delete') {
+  const taskId = args[1];
+
+  if (!taskId) console.error(`Please type a task ID`);
+  else deleteTask(parseInt(taskId));
 }
