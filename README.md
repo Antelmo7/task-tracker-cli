@@ -1,5 +1,5 @@
 # task-tracker-cli
-CLI Task manager project to practice 
+CLI Task manager project to practice working with the filesystem, handling user inputs, and building a simple CLI application.
 
 The user is able to:
 - Add, Update, and Delete tasks
