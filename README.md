@@ -9,27 +9,30 @@ The user is able to:
 - List all tasks that are not done
 - List all tasks that are in progress
 
+## Install package
+Run: `npm i -g vetasks` to install the package globally
+
 ## Adding a new task
-task-cli add "Buy groceries"
+vetasks add "Buy groceries"
 
 ### Output: Task added successfully (ID: 1)
 
 ## Updating and deleting tasks
-task-cli update 1 "Buy groceries and cook dinner"
+vetasks update 1 "Buy groceries and cook dinner"
 
-task-cli delete 1
+vetasks delete 1
 
 ## Marking a task as in progress or done
-task-cli mark-in-progress 1
+vetasks mark-in-progress 1
 
-task-cli mark-done 1
+vetasks mark-done 1
 
 ## Listing all tasks
-task-cli list
+vetasks list
 
 ## Listing tasks by status
-task-cli list done
+vetasks list done
 
-task-cli list todo
+vetasks list todo
 
-task-cli list in-progress
+vetasks list in-progress
