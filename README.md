@@ -1,4 +1,6 @@
 # task-tracker-cli
+Solution for the [Task Tracker](https://roadmap.sh/projects/task-tracker) challenge from [roadmap.sh](https://roadmap.sh)
+
 CLI Task manager project to practice working with the filesystem, handling user inputs, and building a simple CLI application.
 
 The user is able to:
