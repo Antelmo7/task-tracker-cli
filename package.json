@@ -1,8 +1,10 @@
 {
-  "name": "task-cli",
+  "name": "vetasks",
   "version": "1.0.0",
   "description": "CLI Task manager project to practice",
-  "bin": "./src/index.js",
+  "bin": {
+    "vetasks": "src/index.js"
+  },
   "homepage": "https://github.com/Antelmo7/task-tracker-cli#readme",
   "bugs": {
     "url": "https://github.com/Antelmo7/task-tracker-cli/issues"
